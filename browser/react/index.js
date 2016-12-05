@@ -1,7 +1,10 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { Router, Route, hashHistory, IndexRedirect } from 'react-router';
+
 import AppContainer from './containers/AppContainer';
+import FilterableArtistsContainer from './containers/FilterableArtistsContainer';
+
 import Albums from './components/Albums';
 import Album from './components/Album';
 import Artists from './components/Artists';
@@ -13,7 +16,7 @@ ReactDOM.render(
     <Route path='/' component={AppContainer} foo={'foo'}>
       <Route path="/albums" component={Albums} />
       <Route path="/albums/:albumId" component={Album} />
-      <Route path="/artists" component={Artists} />
+      <Route path="/artists" component={FilterableArtistsContainer} />
       <Route path="/artists/:artistId" component={Artist}>
         <Route path="/artists/:artistId/albums" component={Albums} />
         <Route path="/artists/:artistId/songs" component={Songs} />
