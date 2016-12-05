@@ -1,5 +1,6 @@
 import React from 'react';
 import Songs from './Songs';
+import SongSelection from './SongSelection';
 
 class SinglePlaylist extends React.Component {
 
@@ -7,12 +8,12 @@ class SinglePlaylist extends React.Component {
     const playlistId = this.props.routeParams.playlistId;
     const selectPlaylist = this.props.selectPlaylist;
     selectPlaylist(playlistId);
-
    }
 
    componentWillReceiveProps(nextProps){
     if (this.props.routeParams.playlistId !== nextProps.routeParams.playlistId){
-      console.log("change", this.props, nextProps);
+      this.props.selectPlaylist(nextProps.routeParams.playlistId);
+    } else if (this.props.selectedPlaylist.songs && nextProps.selectedPlaylist.songs && this.props.selectedPlaylist.songs !== nextProps.selectedPlaylist.songs) {
       this.props.selectPlaylist(nextProps.routeParams.playlistId);
     }
    }
@@ -22,7 +23,8 @@ class SinglePlaylist extends React.Component {
     return (
       <div>
         <h3>{ playlist.name }</h3>
-        <Songs songs={playlist.songs} /> {/** Hooray for reusability! */}
+        <SongSelection selectedPlaylist={playlist} />
+        <Songs songs={playlist.songs} currentSong={this.props.currentSong} isPlaying={this.props.isPlaying} toggleOne={this.props.toggleOne} />
         { playlist.songs && !playlist.songs.length && <small>No songs.</small> }
         <hr />
       </div>
