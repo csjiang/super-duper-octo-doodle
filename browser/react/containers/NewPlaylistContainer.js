@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import NewPlaylist from '../components/NewPlaylist';
+import axios from 'axios';
 
 export default class NewPlaylistContainer extends Component {
 
@@ -7,7 +8,8 @@ export default class NewPlaylistContainer extends Component {
       super(props);
       this.state = {
         value: '',
-        disabled: true
+        tooLong: false,
+        tooShort: false,
       };
 
       this.handleChange = this.handleChange.bind(this);
@@ -15,14 +17,16 @@ export default class NewPlaylistContainer extends Component {
     }
 
     handleChange(event) {
-      this.setState({value: event.target.value},() =>{
+      this.setState({value: event.target.value}, () =>{
           const val = this.state.value;
-          if (val.length > 16) this.setState({disabled: true});
-          else this.setState({disabled: false});
+          if (val.length === 0) this.setState({tooShort: true})
+          else if (val.length > 16) this.setState({tooLong: true})
+          else this.setState({tooLong: false, tooShort: false});
         });
     }
 
     handleSubmit(event){
+      this.props.createPlaylist(this.state.value);
       this.setState({value:''});
       event.preventDefault();
     }
@@ -30,7 +34,7 @@ export default class NewPlaylistContainer extends Component {
     render () {
       return (
         <div>
-          <NewPlaylist handleChange={this.handleChange} handleSubmit={this.handleSubmit} value={this.state.value} disabled={this.state.disabled} />
+          <NewPlaylist handleChange={this.handleChange} handleSubmit={this.handleSubmit} value={this.state.value} tooLong={this.state.tooLong} tooShort={this.state.tooShort} />
         </div>
       );
     }
