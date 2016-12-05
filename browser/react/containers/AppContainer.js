@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import {hashHistory} from 'react-router';
 import axios from 'axios';
 
 import initialState from '../initialState';
@@ -24,6 +25,7 @@ export default class AppContainer extends Component {
     this.selectAlbum = this.selectAlbum.bind(this);
     this.selectArtist = this.selectArtist.bind(this);
     this.createPlaylist = this.createPlaylist.bind(this);
+    this.selectPlaylist = this.selectPlaylist.bind(this);
 
   }
 
@@ -119,6 +121,14 @@ export default class AppContainer extends Component {
       .then(data => this.onLoadArtist(...data));
   }
 
+  selectPlaylist (playlistId) {
+    axios.get(`/api/playlists/${playlistId}`)
+      .then(res => res.data)
+      .then(playlist => {
+        playlist.songs = playlist.songs.map(convertSong);
+        this.setState({selectedPlaylist: playlist});
+      });
+  }
   onLoadArtist (artist, albums, songs) {
     songs = songs.map(convertSong);
     albums = convertAlbums(albums);
@@ -133,7 +143,9 @@ export default class AppContainer extends Component {
         .then(res => res.data)
         .then(result => {
           console.log(result) // response json from the server!
-          this.setState({ playlists : [...this.state.playlists, result]}); 
+          this.setState({ playlists : [...this.state.playlists, result]});
+          const path = `/playlists/${result.id}`;
+          hashHistory.push(path);
         })
         .catch(console.error);
   }
@@ -145,7 +157,8 @@ export default class AppContainer extends Component {
       toggle: this.toggle,
       selectAlbum: this.selectAlbum,
       selectArtist: this.selectArtist,
-      createPlaylist: this.createPlaylist
+      createPlaylist: this.createPlaylist,
+      selectPlaylist: this.selectPlaylist
     });
 
     return (
